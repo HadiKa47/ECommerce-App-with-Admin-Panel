@@ -15,10 +15,23 @@ import ShoppingCheckout from "./pages/shopping-view/checkout";
 import ShoppingAccount from "./pages/shopping-view/account";
 import CheckAuth from "./components/common/check-auth";
 import UnauthPage from "./pages/unauth-page";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { checkAuth } from "./store/auth-slice";
+import { Skeleton } from "./components/ui/skeleton";
 
 export default function App() {
-  const isAuthenticated = false;
-  const user = null;
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [isAuthChecking, setAuthChecking] = useState(true);
+
+  useEffect(() => {
+    dispatch(checkAuth()).finally(() => setAuthChecking(false));
+  }, [dispatch]);
+
+  if (isAuthChecking) {
+    return <Skeleton className="w-[100px] h-[20px] rounded-full" />;
+  }
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
@@ -34,15 +47,14 @@ export default function App() {
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
         </Route>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route
-            path="dashboard"
-            element={
-              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-                <AdminLayout />
-              </CheckAuth>
-            }
-          />
+        <Route
+          path="/admin"
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <AdminLayout />
+            </CheckAuth>
+          }
+        >
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
