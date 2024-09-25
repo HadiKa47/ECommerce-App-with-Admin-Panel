@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "./components/ui/skeleton";
+import SearchProducts from "./pages/shopping-view/search";
 
 export default function App() {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -72,6 +73,7 @@ export default function App() {
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="account" element={<ShoppingAccount />} />
+          <Route path="search" element={<SearchProducts />} />
         </Route>
         <Route path="/" element={<Navigate to="/auth/login" replace />} />
         <Route path="/unauth-page" element={<UnauthPage />} />
