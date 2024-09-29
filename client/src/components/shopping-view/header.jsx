@@ -9,7 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { shoppingViewHeaderMenuItems } from "@/config";
 import { logout } from "@/store/auth-slice";
 import { useToast } from "@/hooks/use-toast";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,10 +25,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useState } from "react";
 
 export default function ShoppingHeader() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function isActiveButton(menuItem) {
     const isHomeActive =
@@ -35,7 +42,7 @@ export default function ShoppingHeader() {
           !searchParams.get("category")));
     const isCategoryActive =
       menuItem.id !== "products" &&
-      searchParams.get("category") === menuItem.id;
+      searchParams.get("category")?.split(",").includes(menuItem.id);
     const isSearchActive =
       menuItem.id === "search" && location.pathname.includes("search");
 
@@ -106,7 +113,6 @@ export default function ShoppingHeader() {
           <ShoppingCart className="w-6 h-6" />
           <span className="sr-only">User Cart</span>
         </Button>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar className="bg-black">
@@ -129,6 +135,7 @@ export default function ShoppingHeader() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        {isMenuOpen && <span className="font-bold">Toggle Header Menu</span>}
       </div>
     );
   }
@@ -141,16 +148,17 @@ export default function ShoppingHeader() {
           <span className="font-bold">E-Commerce</span>
         </Link>
 
-        <Sheet>
+        <Sheet onOpenChange={(open) => setIsMenuOpen(open)}>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
               <Menu className="w-6 h-6" />
-              <span className="sr-only">Toggle header menu</span>
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs">
             <div className="mb-6">
-              <HeaderRightContent />
+              <SheetTitle>
+                <HeaderRightContent />
+              </SheetTitle>
             </div>
             <MenuItems />
           </SheetContent>
