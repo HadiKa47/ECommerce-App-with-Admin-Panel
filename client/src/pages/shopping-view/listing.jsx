@@ -10,6 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
+import { toast } from "@/hooks/use-toast";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
@@ -39,6 +41,8 @@ export default function ShoppingListing() {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const { user } = useSelector((state) => state.auth);
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -70,6 +74,44 @@ export default function ShoppingListing() {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
+  function handleAddtoCart(getCurrentProductId, getTotalStock) {
+    console.log(cartItems);
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast({
+            title: `Only ${getQuantity} Quantity Can Be Added For This Item`,
+            variant: "destructive",
+          });
+
+          return;
+        }
+      }
+    }
+
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Product Is Added To Cart",
+          description: "You Have Added The Product To Cart Successfully.!",
+          className: "bg-green-500 text-white",
+        });
+      }
+    });
+  }
   // Effect to clear product details on mount
   useEffect(() => {
     setSort("price-lowtohigh");
@@ -151,6 +193,7 @@ export default function ShoppingListing() {
                   key={productItem._id}
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
+                  handleAddtoCart={handleAddtoCart}
                 />
               ))}
           </div>

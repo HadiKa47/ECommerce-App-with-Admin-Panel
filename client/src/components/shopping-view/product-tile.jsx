@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 export default function ShoppingProductTile({
   product,
   handleGetProductDetails,
+  handleAddtoCart,
 }) {
   return (
     <Card className="w-full max-w-sm mx-auto overflow-hidden rounded-lg shadow-lg">
@@ -66,7 +67,10 @@ export default function ShoppingProductTile({
             Out Of Stock
           </Button>
         ) : (
-          <Button className="w-full text-white bg-primary hover:bg-primary-dark">
+          <Button
+            onClick={() => handleAddtoCart(product?._id, product?.totalStock)}
+            className="w-full text-white bg-primary hover:bg-primary-dark"
+          >
             Add to cart
           </Button>
         )}

@@ -6,6 +6,7 @@ import cors from "cors";
 import authRoute from "./routes/auth/auth.routes.js";
 import adminProductsRouter from "./routes/admin/products.routes.js";
 import shopProductsRouter from "./routes/shop/products.routes.js";
+import shopCartRouter from "./routes/shop/cart.routes.js";
 
 const app = express();
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/admin/products", adminProductsRouter);
 
 app.use("/api/shop/products", shopProductsRouter);
+app.use("/api/shop/cart", shopCartRouter);
 
 mongoose
   .connect(process.env.MONGO)
