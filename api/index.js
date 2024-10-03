@@ -7,6 +7,7 @@ import authRoute from "./routes/auth/auth.routes.js";
 import adminProductsRouter from "./routes/admin/products.routes.js";
 import shopProductsRouter from "./routes/shop/products.routes.js";
 import shopCartRouter from "./routes/shop/cart.routes.js";
+import commonFeatureRouter from "./routes/common/feature.routes.js";
 
 const app = express();
 dotenv.config();
@@ -35,6 +36,7 @@ app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
 
+app.use("/api/common/feature", commonFeatureRouter);
 mongoose
   .connect(process.env.MONGO)
   .then(() => {
