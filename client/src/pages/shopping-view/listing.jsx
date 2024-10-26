@@ -15,12 +15,13 @@ import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
-  setProductDetails, // Import the action to clear product details
+  setProductDetails, 
 } from "@/store/shop/products-slice";
 import { ArrowUpDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton"; 
 
 function createSearchParamsHelper(filterParams) {
   const queryParams = [];
@@ -47,6 +48,7 @@ export default function ShoppingListing() {
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   const categorySearchParam = searchParams.get("category");
 
@@ -75,7 +77,6 @@ export default function ShoppingListing() {
   }
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    console.log(cartItems);
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -89,7 +90,6 @@ export default function ShoppingListing() {
             title: `Only ${getQuantity} Quantity Can Be Added For This Item`,
             variant: "destructive",
           });
-
           return;
         }
       }
@@ -112,13 +112,12 @@ export default function ShoppingListing() {
       }
     });
   }
-  // Effect to clear product details on mount
+
+
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-
-    // Clear product details when the page is loaded or when navigating back
-    dispatch(setProductDetails(null));
+    dispatch(setProductDetails(null)); 
   }, [categorySearchParam, dispatch]);
 
   useEffect(() => {
@@ -129,18 +128,20 @@ export default function ShoppingListing() {
   }, [filters]);
 
   useEffect(() => {
-    if (filters !== null && sort !== null)
+    if (filters !== null && sort !== null) {
+      setLoading(true); 
       dispatch(
         fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
-      );
+      ).finally(() => setLoading(false)); 
+    }
   }, [dispatch, sort, filters]);
 
-  // Handle opening the details dialog only if productDetails are present
+  
   useEffect(() => {
     if (productDetails !== null && Object.keys(productDetails).length > 0) {
       setOpenDetailsDialog(true);
     } else {
-      setOpenDetailsDialog(false); // Ensure dialog stays closed if no product details
+      setOpenDetailsDialog(false); 
     }
   }, [productDetails]);
 
@@ -180,7 +181,14 @@ export default function ShoppingListing() {
             </DropdownMenu>
           </div>
         </div>
-        {productList && productList.length === 0 ? (
+
+        {loading ? ( 
+          <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <Skeleton key={index} className="h-48" /> 
+            ))}
+          </div>
+        ) : productList && productList.length === 0 ? (
           <div className="p-4 text-center text-muted-foreground">
             No Products Found Matching The Current Filters. Please Refine Your
             Search...!

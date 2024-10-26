@@ -11,6 +11,7 @@ import shopCartRouter from "./routes/shop/cart.routes.js";
 import commonFeatureRouter from "./routes/common/feature.routes.js";
 import shopAddressRouter from "./routes/shop/address.routes.js";
 import shopOrderRouter from "./routes/shop/order.routes.js";
+import shopSearchRouter from "./routes/shop/search.routes.js";
 
 const app = express();
 dotenv.config();
@@ -41,6 +42,7 @@ app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
+app.use("/api/shop/search", shopSearchRouter);
 
 app.use("/api/common/feature", commonFeatureRouter);
 
