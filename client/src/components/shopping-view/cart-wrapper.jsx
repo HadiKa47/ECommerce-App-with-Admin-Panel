@@ -27,7 +27,7 @@ export default function UserCartWrapper({ cartItems, setOpenCartSheet }) {
       <div className="mt-8 space-y-4">
         {cartItems && cartItems.length > 0
           ? cartItems.map((item) => (
-              <UserCartItemsContent cartItem={item} key={item.id} />
+              <UserCartItemsContent cartItem={item} key={item.productId} />
             ))
           : null}
       </div>

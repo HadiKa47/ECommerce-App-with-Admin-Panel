@@ -9,7 +9,7 @@ export default function ShoppingAccount() {
         <img
           src="/account.png"
           alt="Account Image"
-          className="object-cover object-center w-full h-full"
+          className="object-fill object-center w-full h-full"
         />
       </div>
       <div className="container grid grid-cols-1 gap-8 py-8 mx-auto">

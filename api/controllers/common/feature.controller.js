@@ -43,3 +43,23 @@ export const getFeatureImages = async (req, res) => {
     });
   }
 };
+
+export const deleteFeatureImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Feature.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Feature image deleted successfully!",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message:
+        "An internal server error occurred while deleting the feature image.",
+    });
+  }
+};

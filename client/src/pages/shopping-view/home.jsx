@@ -1,8 +1,4 @@
 import { Button } from "@/components/ui/button";
-import bannerOne from "../../../public/banner-1.webp";
-import bannerTwo from "../../../public/banner-2.webp";
-import bannerThree from "../../../public/banner-3.webp";
-import bannerFour from "../../../public/banner-4.webp";
 import {
   Airplay,
   BabyIcon,
@@ -31,6 +27,7 @@ import ShoppingProductTile from "@/components/shopping-view/product-tile";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { useToast } from "@/hooks/use-toast";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
+import { getFeatureImages } from "@/store/common-slice";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -50,7 +47,6 @@ const brandsWithIcon = [
 ];
 
 export default function ShoppingHome() {
-  const slides = [bannerOne, bannerTwo, bannerThree, bannerFour];
   const [currentSlide, setCurrentSlide] = useState(0);
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
@@ -58,6 +54,7 @@ export default function ShoppingHome() {
   const { cartItems } = useSelector((state) => state.shopCart);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const { user } = useSelector((state) => state.auth);
+  const { featureImageList } = useSelector((state) => state.commonFeature);
 
   const Navigate = useNavigate();
   const dispatch = useDispatch();
@@ -74,19 +71,26 @@ export default function ShoppingHome() {
   }
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 30000);
+    dispatch(getFeatureImages());
+  }, [dispatch]);
 
-    return () => clearInterval(timer);
-  }, [slides.length]);
+  useEffect(() => {
+    if (featureImageList.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % featureImageList.length);
+      }, 30000);
+      return () => clearInterval(timer);
+    }
+  }, [featureImageList]);
 
   const handleNextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setCurrentSlide((prev) => (prev + 1) % featureImageList.length);
   };
 
   const handlePrevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    setCurrentSlide(
+      (prev) => (prev - 1 + featureImageList.length) % featureImageList.length
+    );
   };
 
   function handleGetProductDetails(getCurrentProductId) {
@@ -94,7 +98,6 @@ export default function ShoppingHome() {
   }
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    console.log(cartItems);
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -125,7 +128,7 @@ export default function ShoppingHome() {
         dispatch(fetchCartItems(user?.id));
         toast({
           title: "Product Is Added To Cart",
-          description: "You Have Added The Product To Cart Successfully.!",
+          description: "You Have Added The Product To Cart Successfully!",
           className: "bg-green-500 text-white",
         });
       }
@@ -151,28 +154,31 @@ export default function ShoppingHome() {
 
   useEffect(() => {
     return () => {
-      dispatch(setProductDetails(null)); // Clear product details
-      setOpenDetailsDialog(false); // Ensure dialog is closed
+      dispatch(setProductDetails(null));
+      setOpenDetailsDialog(false);
     };
   }, [dispatch]);
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="relative w-full h-[650px] overflow-hidden">
-        {slides.map((slide, index) => (
-          <img
-            src={slide}
-            key={index}
-            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-        ))}
+      <div className="relative w-full h-[600px] overflow-hidden">
+        {featureImageList && featureImageList.length > 0
+          ? featureImageList.map((slide, index) => (
+              <img
+                src={slide?.image}
+                key={index}
+                className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                  index === currentSlide ? "opacity-100" : "opacity-0"
+                }`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "fill",
+                }}
+              />
+            ))
+          : null}
+
         <Button
           variant="outline"
           size="icon"
@@ -244,7 +250,7 @@ export default function ShoppingHome() {
                     product={productItem}
                     handleGetProductDetails={handleGetProductDetails}
                     handleAddtoCart={handleAddtoCart}
-                    key={productItem}
+                    key={productItem.id} // Use productItem.id instead of productItem
                   />
                 ))
               : null}

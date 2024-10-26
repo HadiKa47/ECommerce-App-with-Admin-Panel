@@ -5,12 +5,10 @@ import jwt from "jsonwebtoken";
 export const register = async (req, res) => {
   const { userName, email, password } = req.body;
 
-
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const usernameRegex = /^[a-zA-Z0-9]+$/;
 
   try {
-    
     if (userName.length > 20) {
       return res.status(400).json({
         success: false,
@@ -18,14 +16,12 @@ export const register = async (req, res) => {
       });
     }
 
-    
     if (!usernameRegex.test(userName)) {
       return res.status(400).json({
         success: false,
         message: "Username can only contain alphanumeric characters",
       });
     }
-
 
     const checkUserName = await User.findOne({ userName });
     if (checkUserName) {
@@ -42,7 +38,6 @@ export const register = async (req, res) => {
       });
     }
 
-   
     const checkEmail = await User.findOne({ email });
     if (checkEmail) {
       return res.status(400).json({
@@ -50,7 +45,7 @@ export const register = async (req, res) => {
         message: "Email already exists",
       });
     }
-    
+
     if (password.length < 8) {
       return res.status(400).json({
         success: false,
@@ -82,7 +77,6 @@ export const register = async (req, res) => {
       });
     }
 
-  
     if (password === userName) {
       return res.status(400).json({
         success: false,
@@ -90,17 +84,14 @@ export const register = async (req, res) => {
       });
     }
 
-  
     const hashPassword = await bcrypt.hash(password, 12);
 
-    
     const newUser = new User({
       userName,
       email,
       password: hashPassword,
     });
 
-    
     await newUser.save();
 
     res.status(200).json({

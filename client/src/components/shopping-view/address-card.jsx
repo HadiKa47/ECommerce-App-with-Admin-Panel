@@ -9,6 +9,7 @@ export default function AddressCard({
   addressInfo,
   handleDeleteAddress,
   handleEditAddress,
+  setCurrentSelectedAddress,
 }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -26,7 +27,13 @@ export default function AddressCard({
   };
 
   return (
-    <Card>
+    <Card
+      onClick={
+        setCurrentSelectedAddress
+          ? () => setCurrentSelectedAddress(addressInfo)
+          : null
+      }
+    >
       <CardContent className="grid gap-4 p-4">
         <Label>Address: {addressInfo?.address}</Label>
         <Label>City: {addressInfo?.city}</Label>

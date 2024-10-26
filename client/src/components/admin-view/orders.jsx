@@ -10,48 +10,38 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import ShoppingOrderDetailsView from "./order-details";
+import AdminOrderDetailsView from "./order-details";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllOrdersByUserId,
-  getOrderDetails,
+  getAllOrdersForAdmin,
+  getOrderDetailsForAdmin,
   resetOrderDetails,
-} from "@/store/shop/order-slice";
+} from "@/store/admin/order-slice";
 import { Badge } from "../ui/badge";
 
-export default function ShoppingOrders() {
+export default function AdminOrdersView() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const { orderList, orderDetails } = useSelector((state) => state.adminOrder);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
-  const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
 
   function handleFetchOrderDetails(getId) {
-    dispatch(getOrderDetails(getId))
-      .unwrap()
-      .then(() => {
-        // Success handling (optional)
-      })
-      .catch((error) => {
-        // Error handling
-        console.error("Failed to fetch order details:", error);
-      });
+    dispatch(getOrderDetailsForAdmin(getId));
   }
 
   useEffect(() => {
-    if (user?.id) {
-      dispatch(getAllOrdersByUserId(user.id));
-    }
-  }, [dispatch, user?.id]);
+    dispatch(getAllOrdersForAdmin());
+  }, [dispatch]);
+
+  console.log(orderDetails, "orderList");
 
   useEffect(() => {
     if (orderDetails !== null) setOpenDetailsDialog(true);
   }, [orderDetails]);
 
-  console.log(orderDetails, "orderDetails");
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Order History</CardTitle>
+        <CardTitle>All Orders</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -101,7 +91,7 @@ export default function ShoppingOrders() {
                         >
                           View Details
                         </Button>
-                        <ShoppingOrderDetailsView orderDetails={orderDetails} />
+                        <AdminOrderDetailsView orderDetails={orderDetails} />
                       </Dialog>
                     </TableCell>
                   </TableRow>

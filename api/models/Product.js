@@ -9,7 +9,7 @@ const ProductSchema = new mongoose.Schema(
     brand: String,
     price: Number,
     salePrice: Number,
-    totalStock: Number,
+    totalStock: { type: Number, min: 0 },
     averageReview: Number,
   },
   { timestamps: true }
