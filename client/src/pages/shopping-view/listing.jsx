@@ -15,13 +15,13 @@ import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
-  setProductDetails, 
+  setProductDetails,
 } from "@/store/shop/products-slice";
 import { ArrowUpDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton"; 
+import { Skeleton } from "@/components/ui/skeleton";
 
 function createSearchParamsHelper(filterParams) {
   const queryParams = [];
@@ -48,7 +48,7 @@ export default function ShoppingListing() {
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const categorySearchParam = searchParams.get("category");
 
@@ -113,11 +113,10 @@ export default function ShoppingListing() {
     });
   }
 
-
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-    dispatch(setProductDetails(null)); 
+    dispatch(setProductDetails(null));
   }, [categorySearchParam, dispatch]);
 
   useEffect(() => {
@@ -129,19 +128,18 @@ export default function ShoppingListing() {
 
   useEffect(() => {
     if (filters !== null && sort !== null) {
-      setLoading(true); 
+      setLoading(true);
       dispatch(
         fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
-      ).finally(() => setLoading(false)); 
+      ).finally(() => setLoading(false));
     }
   }, [dispatch, sort, filters]);
 
-  
   useEffect(() => {
     if (productDetails !== null && Object.keys(productDetails).length > 0) {
       setOpenDetailsDialog(true);
     } else {
-      setOpenDetailsDialog(false); 
+      setOpenDetailsDialog(false);
     }
   }, [productDetails]);
 
@@ -182,16 +180,16 @@ export default function ShoppingListing() {
           </div>
         </div>
 
-        {loading ? ( 
+        {loading ? (
           <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 8 }).map((_, index) => (
-              <Skeleton key={index} className="h-48" /> 
+              <Skeleton key={index} className="h-48" />
             ))}
           </div>
         ) : productList && productList.length === 0 ? (
-          <div className="p-4 text-center text-muted-foreground">
-            No Products Found Matching The Current Filters. Please Refine Your
-            Search...!
+          <div className="mt-10 text-5xl font-extrabold text-center text-gray-500">
+            No Products Match Your Current Filters. Please Consider Refining
+            Your Search To Find What You Are Looking For...!
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

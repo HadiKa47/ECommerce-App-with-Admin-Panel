@@ -24,7 +24,10 @@ export default function UserCartWrapper({ cartItems, setOpenCartSheet }) {
       <SheetHeader>
         <SheetTitle>Your Cart</SheetTitle>
       </SheetHeader>
-      <div className="mt-8 space-y-4">
+      <div
+        className="mt-8 space-y-4 overflow-auto"
+        style={{ maxHeight: "725px", scrollbarWidth: "none" }}
+      >
         {cartItems && cartItems.length > 0
           ? cartItems.map((item) => (
               <UserCartItemsContent cartItem={item} key={item.productId} />
