@@ -6,6 +6,7 @@ import cors from "cors";
 import authRoute from "./routes/auth/auth.routes.js";
 import adminProductsRouter from "./routes/admin/products.routes.js";
 import adminOrderRouter from "./routes/admin/order.routes.js";
+import dashboardRoutes from "./routes/admin/dashboard.routes.js";
 import shopProductsRouter from "./routes/shop/products.routes.js";
 import shopCartRouter from "./routes/shop/cart.routes.js";
 import commonFeatureRouter from "./routes/common/feature.routes.js";
@@ -38,6 +39,7 @@ app.use(express.json());
 app.use("/api/auth", authRoute);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrderRouter);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
