@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { shoppingViewHeaderMenuItems } from "@/config";
-import { logout } from "@/store/auth-slice";
+import { logout, resetTokenAndCredentials } from "@/store/auth-slice";
 import { useToast } from "@/hooks/use-toast";
 import {
   Sheet,
@@ -103,7 +103,10 @@ export default function ShoppingHeader() {
     const { toast } = useToast();
 
     function handleLogout() {
-      dispatch(logout());
+      // dispatch(logout());
+      dispatch(resetTokenAndCredentials());
+      sessionStorage.clear();
+      navigate("/auth/login");
       toast({
         title: "Logout Successful",
         description: "You have successfully logged out.",

@@ -5,7 +5,8 @@ const initialState = {
   isAuthenticated: false,
   isLoading: true,
   user: null,
-  error: null, 
+  error: null,
+  token: null,
 };
 
 export const register = createAsyncThunk(
@@ -13,7 +14,7 @@ export const register = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
         formData,
         {
           withCredentials: true,
@@ -22,7 +23,7 @@ export const register = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error.response && error.response.data) {
-        return rejectWithValue(error.response.data); 
+        return rejectWithValue(error.response.data);
       }
       return rejectWithValue({ message: "An unexpected error occurred." });
     }
@@ -34,7 +35,7 @@ export const login = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
         formData,
         {
           withCredentials: true,
@@ -43,7 +44,7 @@ export const login = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error.response && error.response.data) {
-        return rejectWithValue(error.response.data); 
+        return rejectWithValue(error.response.data);
       }
       return rejectWithValue({ message: "An unexpected error occurred." });
     }
@@ -55,7 +56,7 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/logout",
+        `${import.meta.env.VITE_API_URL}/api/auth/logout`,
         {},
         {
           withCredentials: true,
@@ -68,45 +69,60 @@ export const logout = createAsyncThunk(
   }
 );
 
-export const checkAuth = createAsyncThunk(
-  "auth/checkauth",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/api/auth/check-auth",
-        {
-          withCredentials: true,
-          headers: {
-            "Cache-Control":
-              "no-store, no-cache, must-revalidate, proxy-revalidate",
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue({ message: "Failed to check authentication." });
-    }
-  }
-);
+// export const checkAuth = createAsyncThunk(
+//   "auth/checkauth",
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.get(
+//         `${import.meta.env.VITE_API_URL}/api/auth/check-auth`,
+//         {
+//           withCredentials: true,
+//           headers: {
+//             "Cache-Control":
+//               "no-store, no-cache, must-revalidate, proxy-revalidate",
+//           },
+//         }
+//       );
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue({ message: "Failed to check authentication." });
+//     }
+//   }
+// );
 
+export const checkAuth = createAsyncThunk("auth/checkauth", async (token) => {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/api/auth/check-auth`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    }
+  );
+  return response.data;
+});
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
-      state.isAuthenticated = !!action.payload;
+    setUser: (state, action) => {},
+    resetTokenAndCredentials: (state) => {
+      state.isAuthenticated = false;
+      state.user = null;
+      state.token = null;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(register.pending, (state) => {
         state.isLoading = true;
-        state.error = null; 
+        state.error = null;
       })
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user; 
+        state.user = action.payload.user;
         state.isAuthenticated = false;
         state.error = null;
       })
@@ -125,13 +141,16 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
-        state.error = null; 
+        state.token = action.payload.token;
+        sessionStorage.setItem("token", JSON.stringify(action.payload.token));
+        state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
         state.error = action.payload?.message;
+        state.token = null;
       })
       // Check Auth Actions
       .addCase(checkAuth.pending, (state) => {
@@ -148,7 +167,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
-        state.error = action.payload?.message; 
+        state.error = action.payload?.message;
       })
       // Logout Actions
       .addCase(logout.fulfilled, (state) => {
@@ -160,5 +179,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser } = authSlice.actions;
+export const { setUser, resetTokenAndCredentials } = authSlice.actions;
 export default authSlice.reducer;

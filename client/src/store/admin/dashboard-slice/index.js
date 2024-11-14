@@ -17,7 +17,7 @@ export const getAllAddresses = createAsyncThunk(
   "adminDashboard/getAllAddresses",
   async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/dashboard/addresses"
+      `${import.meta.env.VITE_API_URL}/api/dashboard/addresses`
     );
     return response.data;
   }
@@ -27,7 +27,7 @@ export const getAllReviews = createAsyncThunk(
   "adminDashboard/getAllReviews",
   async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/dashboard/reviews"
+      `${import.meta.env.VITE_API_URL}/api/dashboard/reviews`
     );
     return response.data;
   }
@@ -37,7 +37,7 @@ export const getAllUsers = createAsyncThunk(
   "adminDashboard/getAllUsers",
   async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/dashboard/users"
+      `${import.meta.env.VITE_API_URL}/api/dashboard/users`
     );
     return response.data;
   }
@@ -47,7 +47,7 @@ export const getSingleAddress = createAsyncThunk(
   "adminDashboard/getSingleAddress",
   async (addressId) => {
     const response = await axios.get(
-      `http://localhost:5000/api/dashboard/addresses/${addressId}`
+      `${import.meta.env.VITE_API_URL}/api/dashboard/addresses/${addressId}`
     );
     return response.data;
   }
@@ -57,7 +57,7 @@ export const getSingleReview = createAsyncThunk(
   "adminDashboard/getSingleReview",
   async (reviewId) => {
     const response = await axios.get(
-      `http://localhost:5000/api/dashboard/reviews/${reviewId}`
+      `${import.meta.env.VITE_API_URL}/api/dashboard/reviews/${reviewId}`
     );
     return response.data;
   }
@@ -67,7 +67,7 @@ export const getSingleUser = createAsyncThunk(
   "adminDashboard/getSingleUser",
   async (userId) => {
     const response = await axios.get(
-      `http://localhost:5000/api/dashboard/users/${userId}`
+      `${import.meta.env.VITE_API_URL}/api/dashboard/users/${userId}`
     );
     return response.data;
   }
@@ -77,7 +77,7 @@ export const getAllOrders = createAsyncThunk(
   "adminDashboard/getAllOrders",
   async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/dashboard/orders"
+      `${import.meta.env.VITE_API_URL}/api/dashboard/orders`
     );
     return response.data;
   }
@@ -87,7 +87,7 @@ export const changeUserRole = createAsyncThunk(
   "adminDashboard/changeUserRole",
   async ({ userId, newRole }) => {
     const response = await axios.put(
-      "http://localhost:5000/api/dashboard/users/role",
+      `${import.meta.env.VITE_API_URL}/api/dashboard/users/role`,
       { userId, newRole }
     );
     return response.data;
@@ -98,7 +98,7 @@ export const deleteUser = createAsyncThunk(
   "adminDashboard/deleteUser",
   async (userId) => {
     const response = await axios.delete(
-      `http://localhost:5000/api/dashboard/users/${userId}`
+      `${import.meta.env.VITE_API_URL}/api/dashboard/users/${userId}`
     );
     return response.data;
   }
