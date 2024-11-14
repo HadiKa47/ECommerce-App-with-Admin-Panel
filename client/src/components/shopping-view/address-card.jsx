@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Label } from "../ui/label";
-import Modal from "../ui/Modal";
+import Modal from "../ui/modal";
 import { CircleAlert } from "lucide-react";
 
 export default function AddressCard({

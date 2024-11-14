@@ -18,7 +18,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import Modal from "@/components/ui/Modal";
+import Modal from "@/components/ui/modal";
 import { CircleAlert } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { useToast } from "@/hooks/use-toast";
