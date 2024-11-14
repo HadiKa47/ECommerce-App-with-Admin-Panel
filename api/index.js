@@ -14,6 +14,7 @@ import shopAddressRouter from "./routes/shop/address.routes.js";
 import shopOrderRouter from "./routes/shop/order.routes.js";
 import shopSearchRouter from "./routes/shop/search.routes.js";
 import shopReviewRouter from "./routes/shop/review.routes.js";
+import path from "path";
 
 const app = express();
 dotenv.config();
@@ -33,6 +34,7 @@ app.use(
   })
 );
 
+const __dirname = path.resolve();
 app.use(cookieParser());
 app.use(express.json());
 
@@ -49,6 +51,11 @@ app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/review", shopReviewRouter);
 
 app.use("/api/common/feature", commonFeatureRouter);
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 mongoose
   .connect(process.env.MONGO)
