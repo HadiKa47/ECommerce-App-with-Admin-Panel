@@ -20,7 +20,7 @@ import {
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Modal from "@/components/ui/modal";
 import { CircleAlert } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
